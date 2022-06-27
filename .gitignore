@@ -1,0 +1,11 @@
+.ipynb_*
+*.out
+*.aux
+*.log
+*.bbl
+*.blg
+*.fls
+*.fdb_*
+*.synctex*
+sbc-template.pdf
+
