@@ -8,4 +8,7 @@
 *.fdb_*
 *.synctex*
 sbc-template.pdf
+nana
+systemc*
+tfsim
 
