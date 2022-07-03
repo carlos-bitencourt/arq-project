@@ -40,6 +40,7 @@ int sc_main(int argc, char *argv[])
     menubar mnbar(fm);
     button botao(fm);
     button clock_control(fm);
+    button clock_control_run_all(fm);
     button exit(fm);
     group clock_group(fm);
     label clock_count(clock_group);
@@ -53,9 +54,10 @@ int sc_main(int argc, char *argv[])
     top top1("top");
     botao.caption("START");
     clock_control.caption("NEXT CYCLE");
+    clock_control_run_all.caption("ALL CYCLES");
     exit.caption("EXIT");
     plc["rst"] << table;
-    plc["btns"] << botao << clock_control << exit;
+    plc["btns"] << botao << clock_control << clock_control_run_all << exit;
     plc["memor"] << memory;
     plc["regs"] << reg;
     plc["rob"] << rob;
@@ -67,9 +69,10 @@ int sc_main(int argc, char *argv[])
     spec = false;
     set_spec(plc,spec);
     plc.collocate();
-
+    
     mnbar.push_back("Opções");
     menu &op = mnbar.at(0);
+
     menu::item_proxy spec_ip = op.append("Especulação",[&](menu::item_proxy &ip)
     {
         if(ip.checked())
@@ -366,6 +369,8 @@ int sc_main(int argc, char *argv[])
         else
             fila = true;
     });
+   
+    
     vector<string> columns = {"#","Name","Busy","Op","Vj","Vk","Qj","Qk","A"}; 
     for(unsigned int i = 0 ; i < columns.size() ; i++)
     {
@@ -515,6 +520,7 @@ int sc_main(int argc, char *argv[])
                     spec = true;
                     set_spec(plc,spec); 
                     spec_ip.checked(true);
+                    //spec_ip1.checked(true);
                     k--;
                     break;
                 case 'l':
@@ -540,12 +546,14 @@ int sc_main(int argc, char *argv[])
         }
     }
     clock_control.enabled(false);
+    clock_control_run_all.enabled(false);
     botao.events().click([&]
     {
         if(fila)
         {
             botao.enabled(false);
             clock_control.enabled(true);
+            clock_control_run_all.enabled(true);
             //Desativa os menus apos inicio da execucao
             op.enabled(0,false);
             op.enabled(1,false);
@@ -567,6 +575,15 @@ int sc_main(int argc, char *argv[])
     {
         if(sc_is_running())
             sc_start();
+
+
+    });
+    clock_control_run_all.events().click([&]
+    {
+        while(sc_is_running() && fila){
+            sc_start();
+        }
+    
     });
     exit.events().click([]
     {
