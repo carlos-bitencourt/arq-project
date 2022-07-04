@@ -1,4 +1,6 @@
 #include "branch_predictor.hpp"
+#include <iostream>
+using namespace std;
 
 branch_predictor::branch_predictor(unsigned int t): n_bits(t)
 {
@@ -12,6 +14,8 @@ bool branch_predictor::predict()
 }
 void branch_predictor::update_state(bool taken)
 {
+    cout << "Predição: " << taken << "\n";
+
     if(taken)
     {
         state = ++state>max?max:state; 

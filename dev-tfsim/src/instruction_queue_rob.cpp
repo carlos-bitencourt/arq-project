@@ -161,3 +161,8 @@ void instruction_queue_rob::add_instructions(unsigned int pos, vector<instr_q> i
     }
     instructions.auto_draw(true);
 }
+
+bool instruction_queue_rob::final_instrution()
+{
+    return (pc == instruct_queue.size());
+}
