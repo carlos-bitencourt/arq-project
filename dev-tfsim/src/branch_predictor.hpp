@@ -5,9 +5,10 @@ public:
     bool predict();
     bool predict(int dest);
     void update_state(bool taken);
-    void set_type(int tp);
+    void taxa_de_acerto(int pred, int rob_pred);
 
 private:
     int n_bits, max, state;
-    int type; // 0 - Dynamic, 1 - Taken Desvio pra cima, 2 - Not Taken Devio pra cima
+    int type;                    // 0 - Dynamic, 1 - Taken Desvio pra cima, 2 - Not Taken Devio pra cima
+    int n_acerto, n_erro, total; // para calculo da taxa de acerto.
 };

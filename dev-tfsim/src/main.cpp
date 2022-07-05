@@ -79,13 +79,23 @@ int sc_main(int argc, char *argv[])
 
     menu::item_proxy spec_ip1 = op1.append("Desvio Para Cima TAKEN (V1)", [&](menu::item_proxy &ip)
                                            {
+                                               spec = false;
+                                               if (ip.checked())
+                                                   spec = true;
+
+                                               set_spec(plc, spec);
+                                               pred_tp = 1; });
+    op1.check_style(0, menu::checks::highlight);
+    menu::item_proxy spec_ip2 = op1.append("Desvio Para Cima NOT TAKEN (V2)", [&](menu::item_proxy &ip)
+                                           {
         spec = false;
         if(ip.checked())
             spec = true;
     
         set_spec(plc,spec);
-        pred_tp = 1; });
-    op1.check_style(0, menu::checks::highlight);
+        pred_tp = 2; });
+    op1.check_style(1, menu::checks::highlight);
+
     op1.append("Programa 01", [&](menu::item_proxy &ip)
                {
         string path = "in/inst_artigo/in_01.txt";       
@@ -242,6 +252,7 @@ int sc_main(int argc, char *argv[])
             spec = false;
         set_spec(plc,spec); });
     op.check_style(0, menu::checks::highlight);
+
     op.append("Modificar valores...");
     auto sub = op.create_sub_menu(1);
     sub->append("Número de Estações de Reserva", [&](menu::item_proxy ip)
@@ -672,8 +683,27 @@ int sc_main(int argc, char *argv[])
             case 's':
                 spec = true;
                 set_spec(plc, spec);
-                spec_ip.checked(true);
-                spec_ip1.checked(true);
+                if (pred_tp == 0)
+                {
+                    spec_ip.checked(true);
+                    spec_ip1.checked(false);
+                    spec_ip2.checked(false);
+                }
+                else if (pred_tp == 1)
+                {
+                    spec_ip.checked(false);
+                    spec_ip1.checked(true);
+                    spec_ip2.checked(false);
+                }
+                else if (pred_tp == 2)
+                {
+                    spec_ip.checked(false);
+                    spec_ip1.checked(false);
+                    spec_ip2.checked(true);
+                }
+                else
+                    spec_ip.checked(true);
+
                 k--;
                 break;
             case 'l':
@@ -725,8 +755,10 @@ int sc_main(int argc, char *argv[])
             show_message("Fila de instruções vazia","A fila de instruções está vazia. Insira um conjunto de instruções para iniciar."); });
     clock_control.events().click([&]
                                  {
-                                     if (sc_is_running())
-                                         sc_start(); });
+                                     if (sc_is_running() && (!top1.rob_empty() || !top1.final_instrution()))
+                                         sc_start();
+                                     else
+                                         show_message("Fila de instruções vazia", "Execução concluída!"); });
     clock_control_run_all.events().click([&]
                                          {
                                              while (sc_is_running() && (!top1.rob_empty() || !top1.final_instrution()))

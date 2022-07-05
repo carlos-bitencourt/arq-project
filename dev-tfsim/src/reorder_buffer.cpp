@@ -151,11 +151,14 @@ void reorder_buffer::leitura_issue()
                 cat.at(pos).text(DESTINATION, ord[2]);
                 ptrs[pos]->destination = ord[2];
             }
+
             ptrs[pos]->prediction = preditor.predict(std::stoi(ptrs[pos]->destination));
-            if (ptrs[pos]->prediction)
+
+            if (preditor.predict())
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry) + ' ' + ptrs[pos]->destination);
             else
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry));
+
             if (ptrs[pos]->qj == 0 && ptrs[pos]->qk == 0)
                 ptrs[pos]->ready = true;
         }
@@ -199,12 +202,19 @@ void reorder_buffer::new_rob_head()
                 pred = branch(instr_type, rob_buff[0]->vj, rob_buff[0]->vk);
             else
                 pred = branch(instr_type, (float)rob_buff[0]->vj);
+
+            preditor.taxa_de_acerto(pred, rob_buff[0]->prediction);
+
             if (pred != rob_buff[0]->prediction)
             {
                 if (pred)
+                {
                     out_iq->write(rob_buff[0]->destination + ' ' + std::to_string(rob_buff[0]->entry));
+                }
                 else
+                {
                     out_iq->write("R " + std::to_string(rob_buff[0]->entry));
+                }
                 cout << "-----------------LIMPANDO ROB no ciclo " << sc_time_stamp() << " -----------------" << endl
                      << flush;
                 _flush(); // Esvazia o ROB
