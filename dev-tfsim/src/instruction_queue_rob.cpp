@@ -26,6 +26,7 @@ void instruction_queue_rob::main()
 {
     auto cat = instructions.at(0);
     pc = 0;
+    inst_count = 0;
     while (1)
     {
         if (pc < instruct_queue.size())
@@ -41,6 +42,7 @@ void instruction_queue_rob::main()
             wait(SC_ZERO_TIME);
             out->write(instruct_queue[pc].instruction + " " + std::to_string(pc));
             pc++;
+            inst_count++;
             wait(SC_ZERO_TIME);
             cat.at(pc - 1).text(ISS, "X");
         }
@@ -61,9 +63,8 @@ void instruction_queue_rob::leitura_rob()
     {
         instructions.at(0).at(pc - 1).select(false);
         // replace_instructions(last_pc[index] - 1, index);
-        cout << "entrei aqui: " << index << "\n";
         replace_instructions(last_pc[index], index);
-        // pc = last_pc[index]-1; //gambis estava errando ultima instrução
+        // pc = last_pc[index] - 1; // estava errando ultima instrução
         pc = last_pc[index];
         instruct_queue = last_instr[index];
     }
@@ -166,4 +167,9 @@ void instruction_queue_rob::add_instructions(unsigned int pos, vector<instr_q> i
 bool instruction_queue_rob::final_instrution()
 {
     return (pc == instruct_queue.size());
+}
+
+int instruction_queue_rob::get_inst_count()
+{
+    return inst_count;
 }

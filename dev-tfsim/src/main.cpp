@@ -755,15 +755,20 @@ int sc_main(int argc, char *argv[])
             show_message("Fila de instruções vazia","A fila de instruções está vazia. Insira um conjunto de instruções para iniciar."); });
     clock_control.events().click([&]
                                  {
-                                     if (sc_is_running() && (!top1.rob_empty() || !top1.final_instrution()))
+                                     if (sc_is_running() && !top1.finalizar_execucao())
+                                     {
                                          sc_start();
+                                         top1.show_metricas();
+                                     }
                                      else
                                          show_message("Fila de instruções vazia", "Execução concluída!"); });
     clock_control_run_all.events().click([&]
                                          {
-                                             while (sc_is_running() && (!top1.rob_empty() || !top1.final_instrution()))
+                                             while (sc_is_running() && !top1.finalizar_execucao())
                                              {
                                                  sc_start();
+                                                 top1.show_metricas();
+                                                
                                              }
                                              show_message("Fila de instruções vazia", "Execução concluída!"); });
 

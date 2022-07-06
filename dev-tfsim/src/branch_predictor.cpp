@@ -10,6 +10,7 @@ branch_predictor::branch_predictor(unsigned int t, unsigned int tp) : n_bits(t),
     n_acerto = 0;
     n_erro = 0;
     total = 0;
+    taxa_acerto = 0.0;
 }
 
 bool branch_predictor::predict()
@@ -96,13 +97,17 @@ void branch_predictor::update_state(bool taken)
 
 void branch_predictor::taxa_de_acerto(int pred, int rob_pred)
 {
-    float taxa_acerto = 0.0;
     if (pred != rob_pred)
         n_erro++;
 
     n_acerto = total - n_erro;
-
     taxa_acerto = float(n_acerto) / total;
 
+    taxa_de_acerto();
+}
+
+void branch_predictor::taxa_de_acerto()
+{
     cout << "Taxa de Acerto: " << taxa_acerto << " = (Acertos(" << n_acerto << ") / Total (" << total << "))\n";
+    cout << "Total de Erros " << (state ? "TAKEN:" : "NOT TAKEN:") << n_erro << "\n";
 }
