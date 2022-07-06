@@ -36,6 +36,8 @@ public:
     void value_check();
     void check_conflict();
     bool empty();
+    int get_n_commited_inst();
+    void preditor_taxa();
 
 private:
     struct rob_slot
@@ -67,6 +69,7 @@ private:
     };
     unsigned int tam;
     unsigned int last_rob;
+    unsigned int n_commited_inst;
     rob_slot **ptrs;
     deque<rob_slot *> rob_buff;
     sc_event free_rob_event, new_rob_head_event, rob_head_value_event, resv_read_oper_event;

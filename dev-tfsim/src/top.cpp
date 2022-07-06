@@ -146,12 +146,14 @@ void top::rob_mode(unsigned int nadd, unsigned int nmul, unsigned int nload, map
     mem_r->out_slb(*mem_slb_bus);
 }
 
-bool top::rob_empty()
+bool top::finalizar_execucao()
 {
-    return rob->empty();
+    return rob->empty() && fila_r->final_instrution();
 }
 
-bool top::final_instrution()
+void top::show_metricas()
 {
-    return fila_r->final_instrution();
+    cout << "Instruções Comitadas: " << rob->get_n_commited_inst() << "\n";
+    cout << "Instruções Processadas: " << fila_r->get_inst_count() << "\n";
+    rob->preditor_taxa();
 }

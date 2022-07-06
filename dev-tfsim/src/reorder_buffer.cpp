@@ -8,6 +8,7 @@ reorder_buffer::reorder_buffer(sc_module_name name, unsigned int sz, unsigned in
                                                                                                                                                                              instr_queue_gui(instr_gui)
 {
     last_rob = 0;
+    n_commited_inst = 0;
     branch_instr = {{"BEQ", 0}, {"BNE", 1}, {"BGTZ", 2}, {"BLTZ", 3}, {"BGEZ", 4}, {"BLEZ", 5}};
     ptrs = new rob_slot *[tam];
     for (unsigned int i = 0; i < tam; i++)
@@ -240,6 +241,7 @@ void reorder_buffer::new_rob_head()
             rob_buff[0]->ready = false;
             rob_buff[0]->destination = "";
             rob_buff[0]->qj = rob_buff[0]->qk = 0;
+            n_commited_inst++;
             cout << "Commit da instrucao " << rob_buff[0]->instruction << " com valor " << rob_buff[0]->value << " no ciclo " << sc_time_stamp() << endl
                  << flush;
             free_rob_event.notify(1, SC_NS);
@@ -505,4 +507,14 @@ int reorder_buffer::instruction_pos_finder(string p)
 bool reorder_buffer::empty()
 {
     return rob_buff.empty();
+}
+
+int reorder_buffer::get_n_commited_inst()
+{
+    return n_commited_inst;
+}
+
+void reorder_buffer::preditor_taxa()
+{
+    preditor.taxa_de_acerto();
 }
