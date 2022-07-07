@@ -172,4 +172,5 @@ bool instruction_queue_rob::final_instrution()
 int instruction_queue_rob::get_inst_count()
 {
     return inst_count;
+    // return instruct_queue.size();
 }

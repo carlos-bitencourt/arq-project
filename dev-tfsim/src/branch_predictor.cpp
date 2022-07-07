@@ -32,7 +32,7 @@ bool branch_predictor::predict(int dest)
 {
 
     total++;
-    cout << "Total de Predição:" << total << "\n";
+    // cout << "Total de Predição:" << total << "\n";
     switch (type)
     {
     case 0: // dinamico
@@ -109,5 +109,5 @@ void branch_predictor::taxa_de_acerto(int pred, int rob_pred)
 void branch_predictor::taxa_de_acerto()
 {
     cout << "Taxa de Acerto: " << taxa_acerto << " = (Acertos(" << n_acerto << ") / Total (" << total << "))\n";
-    cout << "Total de Erros " << (state ? "TAKEN:" : "NOT TAKEN:") << n_erro << "\n";
+    // cout << "Total de Erros " << (state ? "TAKEN:" : "NOT TAKEN:") << n_erro << "\n";
 }
