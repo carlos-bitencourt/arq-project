@@ -180,68 +180,150 @@ int sc_main(int argc, char *argv[])
 
     op1.append("Programa 02", [&](menu::item_proxy &ip)
                {
-                   string path = "in/inst_artigo/in_02.txt";
-                   inFile.open(path);
-                   if (!add_instructions(inFile, instruction_queue, instruct))
-                       show_message("Arquivo inválido", "Não foi possível abrir o arquivo!");
-                   else
-                       fila = true;
+        string path = "in/inst_artigo/in_02.txt";
+        inFile.open(path);
+        if (!add_instructions(inFile, instruction_queue, instruct))
+            show_message("Arquivo inválido", "Não foi possível abrir o arquivo!");
+        else
+            fila = true;
 
-                   path = "in/inst_artigo/in_02_reg_int.txt";
-                   inFile.open(path);
-                   if (!inFile.is_open())
-                       show_message("Arquivo inválido", "Não foi possível abrir o arquivo de reg int!");
-                   else
-                   {
-                       auto reg_gui = reg.at(0);
-                       int value, i = 0;
-                       while (inFile >> value && i < 32)
-                       {
-                           reg_gui.at(i).text(1, std::to_string(value));
-                           i++;
-                       }
-                       for (; i < 32; i++)
-                           reg_gui.at(i).text(1, "0");
-                       inFile.close();
-                   }
-                   path = "in/inst_artigo/in_02_reg_fp.txt";
-                   inFile.open(path);
-                   if (!inFile.is_open())
-                       show_message("Arquivo inválido", "Não foi possível abrir o arquivo de reg fp!");
-                   else
-                   {
-                       auto reg_gui = reg.at(0);
-                       int i = 0;
-                       float value;
-                       while (inFile >> value && i < 32)
-                       {
-                           reg_gui.at(i).text(4, std::to_string(value));
-                           i++;
-                       }
-                       for (; i < 32; i++)
-                           reg_gui.at(i).text(4, "0");
-                       inFile.close();
-                   }
+        path = "in/inst_artigo/in_02_reg_int.txt";
+        inFile.open(path);
+        if (!inFile.is_open())
+            show_message("Arquivo inválido", "Não foi possível abrir o arquivo de reg int!");
+        else
+        {
+            auto reg_gui = reg.at(0);
+            int value, i = 0;
+            while (inFile >> value && i < 32)
+            {
+                reg_gui.at(i).text(1, std::to_string(value));
+                i++;
+            }
+            for (; i < 32; i++)
+                reg_gui.at(i).text(1, "0");
+            inFile.close();
+        }
+        path = "in/inst_artigo/in_02_reg_fp.txt";
+        inFile.open(path);
+        if (!inFile.is_open())
+            show_message("Arquivo inválido", "Não foi possível abrir o arquivo de reg fp!");
+        else
+        {
+            auto reg_gui = reg.at(0);
+            int i = 0;
+            float value;
+            while (inFile >> value && i < 32)
+            {
+                reg_gui.at(i).text(4, std::to_string(value));
+                i++;
+            }
+            for (; i < 32; i++)
+                reg_gui.at(i).text(4, "0");
+            inFile.close();
+        }
 
-                   path = "in/inst_artigo/in_02_mem.txt";
-                   inFile.open(path);
-                   if (!inFile.is_open())
-                       show_message("Arquivo inválido", "Não foi possível abrir o arquivo de memória!");
-                   else
-                   {
-                       int i = 0;
-                       int value;
-                       while (inFile >> value && i < 500)
-                       {
-                           memory.Set(i, std::to_string(value));
-                           i++;
-                       }
-                       for (; i < 500; i++)
-                       {
-                           memory.Set(i, "0");
-                       }
-                       inFile.close();
-                   } });
+        path = "in/inst_artigo/in_02_mem.txt";
+        inFile.open(path);
+        if (!inFile.is_open())
+            show_message("Arquivo inválido", "Não foi possível abrir o arquivo de memória!");
+        else
+        {
+            int i = 0;
+            int value;
+            while (inFile >> value && i < 500)
+            {
+                memory.Set(i, std::to_string(value));
+                i++;
+            }
+            for (; i < 500; i++)
+            {
+                memory.Set(i, "0");
+            }
+            inFile.close();
+        } });
+
+    op1.append("Programa 03", [&](menu::item_proxy &ip)
+               {
+        string path = "in/inst_artigo/in_03.txt";       
+        inFile.open(path);
+        if(!add_instructions(inFile,instruction_queue,instruct))
+            show_message("Arquivo inválido","Não foi possível abrir o arquivo!");
+        else
+            fila = true;
+
+        path = "in/inst_artigo/in_03_reg_int.txt";
+        inFile.open(path);
+        if(!inFile.is_open())
+            show_message("Arquivo inválido","Não foi possível abrir o arquivo de reg int!");
+        else
+        {
+            auto reg_gui = reg.at(0);
+            int value,i = 0;
+            while(inFile >> value && i < 32)
+            {
+                reg_gui.at(i).text(1,std::to_string(value));
+                i++;
+            }
+            for(; i < 32 ; i++)
+                reg_gui.at(i).text(1,"0");
+            inFile.close();
+        }
+        path = "in/inst_artigo/in_03_reg_fp.txt";
+        inFile.open(path);
+        if(!inFile.is_open())
+            show_message("Arquivo inválido","Não foi possível abrir o arquivo de reg fp!");
+        else
+        {
+            auto reg_gui = reg.at(0);
+            int i = 0;
+            float value;
+            while(inFile >> value && i < 32)
+            {
+                reg_gui.at(i).text(4,std::to_string(value));
+                i++;
+            }
+            for(; i < 32 ; i++)
+                reg_gui.at(i).text(4,"0");
+            inFile.close();
+        }
+
+        path = "in/inst_artigo/in_03_mem.txt";
+        inFile.open(path);
+        if(!inFile.is_open())
+            show_message("Arquivo inválido","Não foi possível abrir o arquivo de memória!");
+        else
+        {
+            int i = 0;
+            int value;
+            while(inFile >> value && i < 500)
+            {
+                memory.Set(i,std::to_string(value));
+                i++;
+            }
+            for(; i < 500 ; i++)
+            {
+                memory.Set(i,"0");
+            }
+            inFile.close();
+        }
+
+        path = "in/inst_artigo/in_03_time.txt";
+        inFile.open(path);
+        if(!inFile.is_open())
+            show_message("Arquivo inválido","Não foi possível abrir o arquivo de memória!");
+        else
+        {
+    
+            int value;
+            string inst;
+            while(inFile >> inst)
+            {
+                if(inFile >> value && instruct_time.count(inst))
+                    instruct_time[inst] = value;
+            }
+            inFile.close();
+        } });
     // fim modificação
 
     menu::item_proxy spec_ip = op.append("Especulação", [&](menu::item_proxy &ip)
