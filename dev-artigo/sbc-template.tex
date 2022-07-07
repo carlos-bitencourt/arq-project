@@ -10,17 +10,18 @@
 \usepackage{hyperref}
 \usepackage{outlines}
 \usepackage{amsmath}
+\usepackage{color}
 
 \sloppy
 
 
-\title{Trabalho de Arquitetura\\ Relatório Final do Trabalho de Arquitetura\footnote{Dados complementares, código, datasets: https://github.com/carlos-bitencourt/arq-project}}
+\title{Análise de Preditores de Desvios de Direção\\ Relatório Trabalho de Arquitetura\footnote{Dados complementares, código, vídeo: https://github.com/carlos-bitencourt/arq-project}}
 
 
-\author{Carlos A. Bitencourt, Murilo...}
+\author{Carlos A. Bitencourt\inst{1}, Murilo Lázaro\inst{1}}
 
 \address{Faculdade de Computação -- Universidade Federal de Mato Grosso do Sul (UFMS)\\79070-900 -- Campo Grande -- MS -- Brazil
-  \email{carlos.bitencourt@ufms.br}
+  \email{carlos.bitencourt@ufms.br, murilo.lazaro@ufms.br}
 }
 
 \begin{document}
@@ -32,42 +33,123 @@
 \end{abstract}
 
 \begin{resumo}
-  Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois. 
+  Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.
 
 \end{resumo}
 
 \section{Introdução}
 
-No momento atual, ...
 
-Embora muitas pesquisas ...
+Na arquitetura de computadores, busca-se estratégias para a melhoria dos desempenho de programas. Compreender como o \textit{hardware} executa os programas é essêncial para alcançar este objetivo \cite{patterson:2014}. Uma estratégia para a análise de análise de métricas de desempenho é a utilização de simuladores.
 
-Assim sendo, o objetivo desse trabalho é realizar..
+Neste trabalho, busca-se simular a execução de 3 programas com intuito de coletar métricas de desempenho com utilização do \textbf{Algoritmo de Tomasulo} em conjunto com a  técnica de \textbf{Desvio de Predição Baseada em Direção}. Para a execução deste experimento utilizou-se como base o simulador TFSim \cite{lucas:2019}. Trata-se de um simulador funcional para execução fora de ordem e forma especulada, instruções MIPS6, obedecendo criteriosamente o Algoritmo de Tomasulo. Esse trabalho propõe a inclusão de novas funcionalidades, como a inclusão de preditores baseado em direção, criação de uma função que executa todos os ciclos das instruções que compõem um determinado programa e, realização do cálculo de métricas de desempenho, como, o Contador de instruções (IC), instruções por ciclo (IPC), MIPS e tempo de CPU.
 
 \section{Referencial Teórico} \label{sec:refteorico}
 
-Na fundamentação teórica, para que se possa embasar uma análise adequada, faz-se necessário enumerar e descrever ..
+Na fundamentação teórica, para que se possa embasar uma análise adequada, faz-se necessário enumerar e descrever os conceitos utilizados na pesquisa como Algoritmo de Tomazulo, Preditores Baseado em Direção dentre outros.
 
-\subsection{Subseção}
+\subsection{Execução fora de ordem}
 
-Um dos primeiros exemplos ...
+Na execução de um programa, as instruções a serem executadas podem conter situações de riscos de conflito no \textit{pipeline}, dentre eles a dependência verdadeira (\textit{Read After Write} - RAW), antidependências (\textit{Write After Read} - WAR) e dependências de saída (\textit{Write After Write - WAW}) \cite{hennessy:2019}.
+
+\begin{table}[h!]
+  \begin{center}
+    \caption{Exemplo Trecho de Programa.}
+    \label{tab_programa_exe_1}
+    \begin{tabular}{r|l}
+      \textbf{Linha} & \textbf{Instruções}                                   \\
+      \hline
+      1              & fmul \textcolor{red}{f0}, f2, f4                      \\
+      2              & fdiv f10, \textcolor{red}{f0}, f6                     \\
+      3              & fsub.d \textcolor{green}{f3},\textcolor{blue}{f2}, f1 \\
+      4              & fadd.d \textcolor{green}{f3}, f4, f5                  \\
+      5              & fadd.d \textcolor{blue}{f2}, f7, f11                  \\
+    \end{tabular}
+  \end{center}
+\end{table}
+
+Ao considerar o trecho de código na Tabela \ref{tab_programa_exe_1} ocorre uma \textbf{dependência verdadeira} em \textbf{f0} na linha 1 e 2, instruções \textbf{fmul} e \textbf{fdiv}, pois o valor do f0 da instrução \textbf{fdiv}, linha 2, depende do resultado da instrução \textbf{fmul} na linha 1. Deste modo, em pipeline é necessário que instruções que possuem dependências verdadeiras aguardem a execução da instruções das quais dependem. Do mesmo modo, ainda na Tabela \ref{tab_programa_exe_1}, existe uma \textbf{antidependência} caracterizada em \textbf{f2}, na linha 3 e 5, instruções \textbf{fsubd} e \textbf{faddd}. E, por fim, caracteriza-se como \textbf{dependência de saída} as instruções \textbf{f3} nas linhas 3 e 4, entre as instruções \textbf{fsub.d} e \textbf{fadd.d}. Tanto a \textbf{antidependência} quanto a \textbf{dependência de saída}  representam um risco na execução fora de ordem pois podem gerar resultados corrompidos. Deste modo, uma forma de evitar erros de execução é a utilização da técnica de \textbf{renomeação de registradores} dado que a ordem destas instruções não é uma imposição restritiva.
 
 
-Nas subseções a seguir serão apresentados alguns técnicas, conceitos e algoritmos utilizados nesta pesquisa.
+\subsection{Algoritmo de Tomasulo}
 
-\subsubsection{subseção}
+O Algoritmo de Tomasulo foi desenvolvido por Robert Tomasulo, em 1967. Trata-se de uma algoritmo, implementado em hardware, que permite a execução simultânea de instruções em várias unidades de execução, permitindo assim, que as instruções do programa original sejam executadas fora de ordem. O objetivo desse algoritmo é melhorar o desempenho das operações de ponto flutuante, dado um determinado conjunto de instruções, de maneira a tornar os compiladores mais simples, ou seja, menos especializados.
+
+O algoritmo propõe a minimização da quantidade de estados de espera entre as execuções das instruções em trechos de códigos que possui dependências, no caso das dependências de saídas e antidependências, são completamente resolvidas através da técnica de renomeação de registradores usada nas estações de reservas \ref{fig_tomasulo} e, nas instruções que possuem dependências verdadeiras tenta minimizar o número de stalls entre suas execuções.
+
+Na Figura \ref{fig_tomasulo}, observa-se uma estrutura do Algorimo de Tomasulo. O Buffer de reordenação (ROB) guarda as instruções que terminam suas execuções com o propósito de imposição da garantia da ordem de despacho de cada instrução em relação ao código original, impedindo assim, a execução fora de ordem. Somente após confirmação de instrução (\textbf{commit}) uma instrução terá o status de finalizada, realizando a escrita a dos dados produzidos nos registradores e/ou memória \cite{hennessy:2019}. A estrura de especução, garante que nenhuma instrução que está sendo executada da forma especulada, possa escrever permanetemente na memória ou registrador. Em caso de erro de predição todas as instruções especuladas são removidas do buffer sem deixar inconsistente o armazenamento de dados.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.6\textwidth]{img/fig_tomasulo.png}
+  \caption{Estrutura do Harware de Tomasulo. Fonte: Hennessy e Patterson (2019).}
+  \label{fig_tomasulo}
+\end{figure}
+
+
+Considerando este esquema, o Algoritmo de Tomasulo oferece duas vantagens importantes, a primeira é a distribuição da lógica de detecção de riscos, através das Estações de Reservas (ES) distribuídas e do uso do Barramento Comum (CDB), a segunda, trata-se da eliminação de stalls para os riscos de WAW e WAR. Isso pode ocorrer através da renomeação de registradores das ES's e, também pelo processo de armazenar operando na estação de reserva quando estiverem disponíveis. Deste modo, o Algoritmo de Tomasulo torna-se uma ferramenta importante para execução das instruções distribuídas.
+
+\subsubsection{Preditor de Desvio Baseados em Direção} \label{sec:secao_desvio}
+
+Dentres o preditores, existem os estáticos e os dinâmicos. Os estáticos pressupõe que o desvio será independente do histórico de execução. Em contrapartida, os dinâmicos consideram o histórico.
+
+Os Preditores de desvio baseado em direção, são estáticos e consideram a direção do desvio na memória para tomada de decisão. Neste caso, a comparação é entre o endereço de memória atual e o endereço do destino do desvio se faz necessária.
+
+Neste trabalho serão consideradas duas versões de preditores estáticos:
+
+
+Desvios para endereços ``maiores'' \textit{TAKEN} (V1) e Devios para endereços ``maiores'' \textit{NOT TAKEN} (V2). Sendo que, o primeiro (V1), caso a comparação entre o endereço atual e o endereço de desvio indicar que o endereço de desvio é ``maior'', então o preditor ``pega(\textit{TAKEN})'' o desvio, caso contrário ``não pega (\textit{NOT TAKEN})'' o desvio. Da mesma maneira, o segundo (V2), caso a comparação entre o enderço atual e o endereço de desvio indicar que o endereço é ``maior'', então o preditor ``não pega (\textit{NOT TAKEN})'', caso contrário o preditor ``pega(\textit{TAKEN})''.
 
 
 \section{Metodologia}
 
-...
+Para alcançar o propósito do trabalho, foram realizados ajustes no sistema TFSim \cite{lucas:2019}. Dentre eles de um botão ALL CYCLES, cálculo de algumas métricas de desempenho e a implementação de dois novos preditores estáticos descritas abaixo:
 
+\begin{enumerate}
+  \item Inclusão do botão \textit{ALL CYCLE} - realiza a execução de todos os ciclos de execução de trecho de Código, em MIPS.
+  \item Métricas de Desempenho - contador de instruções, Instruções por ciclo (IPC), Milhões de Instruções por Segundo (MIPS) e tempo de execução de CPU; Disponível na parte não gráfica do sistema.
+  \item Inclusão de dois novos Preditores estáticos \ref{sec:secao_desvio}:
+        \begin{enumerate}
+          \item Desvio para cima TAKEN (V1).
+          \item Desvio para cima NOT TAKEN (V2).
+        \end{enumerate}
+  \item Inclusão do menu 'Trabalho' (Figura \ref{fig_menutfsim}) - para auxiliar na execução dos programas do trabalho, foi criado um menu, contento as opções de seleção de 3 novos programas e a opção de escolha dos desvios de predição desenvolvidos.
+\end{enumerate}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.5\textwidth]{img/fig_menutfsim.png}
+  \caption{Insterface do Nova Menu TFSim. Fonte: Elaboração Própria (2022).}
+  \label{fig_menutfsim}
+\end{figure}
+
+Deste modo, na Figura \ref{fig_tfsim}, pode-se observar a interface do sistema que está organizada como segue:
+
+\begin{enumerate}
+  \item Fila de Instruções: mostra as instruções que estão sendo executadas durante a simulação, contendo informações como (despacho, execução, escrita e complemento);
+  \item Estações de Reserva (RS): contém as informações de operandos, como nome da instrução, caso a instrução está ocupada ou não (\textit{Busy}), Op, $V_j$, $V_k$, $Q_j$, $Q_k$ e A;
+  \item Banco de registradores: informa os valores de todos os registradores e qual estação de reserva (ou posição do ROB) está programado para escrever em cada registrador envolvido em uma determinada operação;
+  \item Estrutura de Memória: Conjunto de valores das posições de memória;
+  \item Buffer de Reordenação (ROB): informa quais instruções estão sendo executadas for a de ordem, apresentando seu destino e valor resultante (caso já tenham sido computadas);
+  \item Área onde são exibidos os valores do ciclo de clock. Em um versão futura poderá ser trazida as métricas implementadas de modo não gráfica.
+  \item Botões de controle de execução: \textit{START} – inicia a execução do primeiro código de sequência de códigos. \textit{NEXT CYCLE} – executa um ciclo por vez na sequência dada de códigos. \textit{ALL CYCLE} – executa todos os ciclos de uma determinada sequência, sem sair do programa e \textit{EXIT} – encerra a execução.
+\end{enumerate}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{img/fig_tfsim.png}
+  \caption{Insterface do TFSim. Fonte: Adaptado de dos Reis e Duenha (2019).}
+  \label{fig_tfsim}
+\end{figure}
 
 \section{Análise e Discussão}
 
 ...
 
 \section{Conclusão}\label{sec:figs}
+
+* Trabalhos futuros, implementação de metricas na interface.
+* Botão Limpar Execução.
 
 \bibliographystyle{sbc}
 \bibliography{sbc-template}
