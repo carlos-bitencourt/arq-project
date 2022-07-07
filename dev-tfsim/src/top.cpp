@@ -158,7 +158,7 @@ void top::show_metricas()
     int inst_total = rob->get_n_commited_inst();
     double cpi = float(ciclos) / inst_total;
     double ipc = inst_total / float(ciclos);
-    double cpu_time = inst_total * cpi * 1 / 1000000000;
+    double cpu_time = inst_total * cpi * (1 / 1000000000);
     double mips = (cpu_time / cpi) / 1000000;
 
     cout << "\n\n--------------------MÉTRICAS--------------------\n\n";
