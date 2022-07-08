@@ -156,9 +156,9 @@ Deste modo, a seguir na ... a compilação resultados da execução dos programa
   \caption{Estatísticas da Execução dos programas. Elaboração Própria (2022).}
   \begin{center}
     \label{tab_programas}
-    \begin{tabular}{rcccccc}
+    \begin{tabular}{rllllll}
       \hline
-      \small{\textbf{Métricas}} & \multicolumn{2}{c}{\small{\textbf{Programa01}}} & \multicolumn{2}{c}{\small{\textbf{Programa02}}} & \multicolumn{2}{c}{\small{\textbf{Programa03}}}                                                                                                     \\
+      \small{\textbf{Métricas}} & \multicolumn{2}{l}{\small{\textbf{Programa01}}} & \multicolumn{2}{l}{\small{\textbf{Programa02}}} & \multicolumn{2}{l}{\small{\textbf{Programa03}}}                                                                                                     \\
                                 & V1                                              & V2                                              & V1                                              & V2                              & V1                             & V2                             \\
       \hline
       NI                        & \footnotesize{1529}                             & \footnotesize{1284}                             & \footnotesize{2596}                             & \footnotesize{1640}             & \footnotesize{3864}            & \footnotesize{2304}            \\
@@ -172,7 +172,8 @@ Deste modo, a seguir na ... a compilação resultados da execução dos programa
   \label{tab:multicol}
 \end{table}
 
-Como pode-se notar na Tabela \ref{tab_programas}, o programa 01, com a maioria dos ciclos para baixo (254), obteve, como esperado, melhor Taxa de Acerto com o Desvio para cima NOT TAKEN (V2),
+
+Como pode-se notar na Tabela \ref{tab_programas}, com base nos resultados das métricas de desempenho dos três programas executados, para as predições TAKEN (V1) e NOT TAKEN (V2), ocorrem diferenças de instruções processadas (NI), pois dependendo da predição de desvio V1 ou V2 pode-se executar mais ou menos especulações. Deste modo, refletiu valores menores de V2 em relação a V1. Sobre o número de instruçoes que executaram commit, como era de se esperar que os valores, para cada programa executado, devem ser iguais. Em relação ao tempo de CPU, foi verificado tempo menores para as predições, cerca de 62 por cento(V1) contra 38 por cento(V2). Isso deve-se ao fato da natureza do código analisado, que utilizou desvios do tipo BEQ e BNE com desvios para cima e desvios para baixo, que em tempo de execução, pode privilegiar uma ou outra predições. De maneira análoga, pode-se inferir sobre os valores das taxas de acertos que na predição V2, maior ou igual a 95 por cento para os casos analisados.
 
 \section{Conclusão}\label{sec:figs}
 
@@ -182,7 +183,7 @@ Para elaboração da pesquisa foi necessário realizar o embasamento teóricos d
 
 Deste modo, buscou-se no desenvolvimento dos programas explorar os desvios para cima e para baixo de modo a garantir uma análise adequada do desempenho dos preditores. Sendo que este desempenho está relacionado a características dos programas.
 
-..... Aqui resumo da nossa análise...
+Após a análise observou-se os resultados das métricas de desempenho dos três programas executados, para as predições TAKEN (V1) e NOT TAKEN (V2), e considerando os desvios (características) dos programas notou-se, valores menores de V2 em relação a V1. O acerto nos desvios, aumentou o desempenho considerável na execução dos programas. Deste modo, pode-se concluir, que a estratégia de implementação da arquitetura, impacta de forma relevante no desempenho dos programas.
 
 Assim sendo, cabe sugerir, para pesquisas futuras, a inclusão na ferramenta TFSim de um botão     ``Pause/Stop'', para verificação dos valores no meio da execução. Um botão ``Reiniciar'' para que não seja necessário sair da aplicação a cada execução. E por fim, inclusão de métricas na interface gráfica.
 
