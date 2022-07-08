@@ -18,10 +18,12 @@ public:
     void leitura_rob();
     bool final_instrution();
     int get_inst_count();
+    int get_inst_commit_count();
 
 private:
     unsigned int pc;
     unsigned int inst_count;
+    unsigned int inst_commit_count;
 
     struct instr_q
     {

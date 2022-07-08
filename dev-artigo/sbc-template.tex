@@ -7,6 +7,7 @@
 \usepackage[brazil]{babel}
 
 %\usepackage[latin1]{inputenc}
+\usepackage{multirow}
 \usepackage{hyperref}
 \usepackage{outlines}
 \usepackage{amsmath}
@@ -95,10 +96,7 @@ Dentres o preditores, existem os estáticos e os dinâmicos. Os estáticos press
 
 Os Preditores de desvio baseado em direção, são estáticos e consideram a direção do desvio na memória para tomada de decisão. Neste caso, a comparação é entre o endereço de memória atual e o endereço do destino do desvio se faz necessária.
 
-Neste trabalho serão consideradas duas versões de preditores estáticos:
-
-
-Desvios para endereços ``maiores'' \textit{TAKEN} (V1) e Devios para endereços ``maiores'' \textit{NOT TAKEN} (V2). Sendo que, o primeiro (V1), caso a comparação entre o endereço atual e o endereço de desvio indicar que o endereço de desvio é ``maior'', então o preditor ``pega(\textit{TAKEN})'' o desvio, caso contrário ``não pega (\textit{NOT TAKEN})'' o desvio. Da mesma maneira, o segundo (V2), caso a comparação entre o enderço atual e o endereço de desvio indicar que o endereço é ``maior'', então o preditor ``não pega (\textit{NOT TAKEN})'', caso contrário o preditor ``pega(\textit{TAKEN})''.
+Neste trabalho serão consideradas duas versões de preditores estáticos: Desvios para endereços ``maiores'' \textit{TAKEN} (V1) e Devios para endereços ``maiores'' \textit{NOT TAKEN} (V2). Sendo que, o primeiro (V1), caso a comparação entre o endereço atual e o endereço de desvio indicar que o endereço de desvio é ``maior'', então o preditor ``pega(\textit{TAKEN})'' o desvio, caso contrário ``não pega (\textit{NOT TAKEN})'' o desvio. Da mesma maneira, o segundo (V2), caso a comparação entre o enderço atual e o endereço de desvio indicar que o endereço é ``maior'', então o preditor ``não pega (\textit{NOT TAKEN})'', caso contrário o preditor ``pega(\textit{TAKEN})''.
 
 
 \section{Metodologia}
@@ -119,7 +117,7 @@ Para alcançar o propósito do trabalho, foram realizados ajustes no sistema TFS
 \begin{figure}[h]
   \centering
   \includegraphics[width=.5\textwidth]{img/fig_menutfsim.png}
-  \caption{Insterface do Nova Menu TFSim. Fonte: Elaboração Própria (2022).}
+  \caption{Insterface do Novo Menu TFSim. Fonte: Elaboração Própria (2022).}
   \label{fig_menutfsim}
 \end{figure}
 
@@ -144,7 +142,37 @@ Deste modo, na Figura \ref{fig_tfsim}, pode-se observar a interface do sistema q
 
 \section{Análise e Discussão}
 
-...
+Para a análise, foi necessário a implementação de três programas para a realização dos experimentos. Desta forma, optou-se por definir programas pequenos de modo a viabilizar as execuções. Apesar do sistema (TFsim) já fornecer alguns exemplos de instruções, foram utilizados novos programas com inclução de algumas \textit{branchs} com interações que permitissem o processamento de mais de mil instruções. Desta forma buscou-se a geração satisfatória de métricas.
+
+No programa 1, trabalhou-se com a \textit{branch} BNE com preponderância de desvio para baixo, incrementando o Registrador R1 até que ele fosse igual a R2. Durante o desenvolvimento, acrescentou-se no programa algumas instruções afim de ampliar o número de instruções no pipeline e também o leque de instruções utilizadas. No programa 2,
+....
+
+Para cada programa, após o desenvolvimento e ajustes para o correto funcionamento, foram coletadas métricas de desempenho na utilização dos 2 novos preditores implementados: Desvio para cima TAKEN (V1) e Desvio para cima NOT TAKEN (V2). As métricas coletadas foram Número de Instruções (Comitadas) (NIC), Número de Instruções (NI) Executadas, Ciclos por Instrução (CPI), Tempo de CPU (CPU), Instruções por Segundo (MIPS) e Taxa de Acerto de Predição (TA).
+
+Deste modo, a seguir na ... a compilação resultados da execução dos programas.
+
+
+\begin{table}[ht]
+  \label{tab_programas}
+  \caption{Estatísticas da Execução dos programas. Elaboração Própria (2022).}
+  \begin{center}
+    \begin{tabular}{rcccccc}
+      \hline
+      \textbf{Métricas} & \multicolumn{2}{c}{\textbf{Programa01}} & \multicolumn{2}{c}{\textbf{Programa02}} & \multicolumn{2}{c}{\textbf{Programa03}}                                              \\
+                        & V1                                      & V2                                      & V1                                      & V2           & V1           & V2           \\
+      \hline
+      NI                & 1529                                    & 1284                                    & A                                       & A            & A            & A            \\
+      NIC               & 1023                                    & 1274                                    & A                                       & A            & A            & A            \\
+      CPI               & 1.99902                                 & 1.01099                                 & A                                       & A            & A            & A            \\
+      CPU               & 2.045x$10^6$                            & 1.288x$10^{-6}$                         & 2.045x$10^6$                            & 2.045x$10^6$ & 2.045x$10^6$ & 2.045x$10^6$ \\
+      MIPS              & 1.023x$10^{-12}$                        & 1.274x$10^{-12}$                        & A                                       & A            & A            & A            \\
+      TA                & 0.00393701                              & 0.996078                                & A                                       & A            & A            & A            \\
+    \end{tabular}
+  \end{center}
+  \label{tab:multicol}
+\end{table}
+
+Como pode-se notar na Tabela \ref{tab_programas}, o programa 01, com a maioria dos ciclos para baixo (254), obteve, como esperado, melhor Taxa de Acerto com o Desvio para cima NOT TAKEN (V2),
 
 \section{Conclusão}\label{sec:figs}
 

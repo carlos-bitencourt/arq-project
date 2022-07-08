@@ -27,6 +27,7 @@ void instruction_queue_rob::main()
     auto cat = instructions.at(0);
     pc = 0;
     inst_count = 0;
+    inst_commit_count = 0; // gambis para capturar commit perdido.
     while (1)
     {
         if (pc < instruct_queue.size())
@@ -66,10 +67,12 @@ void instruction_queue_rob::leitura_rob()
         replace_instructions(last_pc[index], index);
         // pc = last_pc[index] - 1; // estava errando ultima instrução
         pc = last_pc[index];
+        inst_commit_count++;
         instruct_queue = last_instr[index];
     }
     else if (ord[0] == "S" && ord.size() == 3) // realiza salto (especulado) e armazena informacoes pre-salto
     {
+
         last_instr[index] = instruct_queue;
         last_pc[index] = pc;
         vector<instr_q> new_instructions_vec;
@@ -85,6 +88,7 @@ void instruction_queue_rob::leitura_rob()
     }
     else // salta atrasado (quando foi predito que nao saltaria)
     {
+        inst_commit_count++;
         vector<instr_q> new_instructions_vec;
         offset = std::stoi(ord[0]);
         instructions.at(0).at(pc - 1).select(false);
@@ -173,4 +177,13 @@ int instruction_queue_rob::get_inst_count()
 {
     return inst_count;
     // return instruct_queue.size();
+}
+
+int instruction_queue_rob::get_inst_commit_count()
+{
+
+    if (inst_commit_count)
+        return inst_commit_count - 1;
+    return inst_commit_count;
+    // return 0;
 }
