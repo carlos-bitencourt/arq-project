@@ -5,6 +5,7 @@ using namespace std;
 branch_predictor::branch_predictor(unsigned int t, unsigned int tp) : n_bits(t),
                                                                       type(tp)
 {
+    // tp - 0 (dinamico) tp -1 (v1) tp -2 (v2)
     max = (1 << n_bits) - 1;
     state = 0;
     n_acerto = 0;
