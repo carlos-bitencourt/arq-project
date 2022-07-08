@@ -155,14 +155,15 @@ void top::show_metricas()
 {
 
     int ciclos = ((sc_time_stamp().value() / 1000) - 1);
-    int inst_total = rob->get_n_commited_inst();
+    int inst_total = (rob->get_n_commited_inst() + fila_r->get_inst_commit_count());
     double cpi = float(ciclos) / inst_total;
     double ipc = inst_total / float(ciclos);
-    double cpu_time = float(ciclos) * 1 / 1000000000;
+    double cpu_time = inst_total * cpi * 1 / 1000000000;
+    // double cpu_time = float(ciclos) * 1 / 1000000000;
     double mips = (cpu_time / cpi) / 1000000;
 
     cout << "\n\n--------------------MÉTRICAS--------------------\n\n";
-    cout << "Instruções Comitadas: " << rob->get_n_commited_inst() << "\n";
+    cout << "Instruções Comitadas: " << inst_total << "\n";
     cout << "Instruções Processadas: " << fila_r->get_inst_count() << "\n";
     rob->preditor_taxa();
     cout << "CPI = " << cpi << " = Ciclos (" << ciclos << ") / Total Inst.(" << inst_total << ")\n";
