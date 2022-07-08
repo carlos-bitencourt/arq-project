@@ -19,10 +19,10 @@
 \title{Análise de Preditores de Desvios de Direção\\ Relatório Trabalho de Arquitetura\footnote{Dados complementares, código, vídeo: https://github.com/carlos-bitencourt/arq-project}}
 
 
-\author{Carlos A. Bitencourt\inst{1}, Murilo Lázaro\inst{1}}
+\author{Carlos A. Bitencourt\inst{1}, Murilo Táparo\inst{1}}
 
 \address{Faculdade de Computação -- Universidade Federal de Mato Grosso do Sul (UFMS)\\79070-900 -- Campo Grande -- MS -- Brazil
-  \email{carlos.bitencourt@ufms.br, murilo.lazaro@ufms.br}
+  \email{carlos.bitencourt@ufms.br, murilotaparo@gmail.com}
 }
 
 \begin{document}
@@ -30,11 +30,11 @@
 \maketitle
 
 \begin{abstract}
-  Write after,   Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after, Write after.
+  This work developed new features in the TFSim tool and implemented and analyzed three programs in order to collect performance metrics using the \textbf{Tomasulo Algorithm} in conjunction with the \textbf{Direction-Based Prediction Deviation} technique. In this way, two new predictors were created in the tool and new metrics were added, as well as the analysis of their performance, with the help of 3 new programs, in metrics such as Hit Rate, Numbers of Instructions, CPU Time, among others.
 \end{abstract}
 
 \begin{resumo}
-  Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.Escrever depois.
+  Este trabalho desenvolveu novas funcionalidades na ferramenta TFSim e implementou e analisou três programas com intuito de coletar métricas de desempenho com utilização do \textbf{Algoritmo de Tomasulo} em conjunto com a  técnica de \textbf{Desvio de Predição Baseada em Direção}. Deste modo, foram elaborados dois novos preditores na ferramenta e adicionado novas métricas, bem como, a realização da análise do seus desempenhos, com ajuda de 3 novos programas, em métricas como Taxa de Acerto, Números de Intruções, Tempo de CPU dentre outros.
 
 \end{resumo}
 
@@ -142,10 +142,10 @@ Deste modo, na Figura \ref{fig_tfsim}, pode-se observar a interface do sistema q
 
 \section{Análise e Discussão}
 
-Para a análise, foi necessário a implementação de três programas para a realização dos experimentos. Desta forma, optou-se por definir programas pequenos de modo a viabilizar as execuções. Apesar do sistema (TFsim) já fornecer alguns exemplos de instruções, foram utilizados novos programas com inclução de algumas \textit{branchs} com interações que permitissem o processamento de mais de mil instruções. Desta forma buscou-se a geração satisfatória de métricas.
+Para a análise, foi necessário a implementação de três programas para a realização dos experimentos. Desta forma, optou-se por definir programas pequenos de modo a viabilizar as execuções. Apesar do sistema (TFsim) já fornecer alguns exemplos de instruções, foram utilizados novos programas com inclução de algumas \textit{branchs} com interações que permitissem o \textbf{processamento superior a mil instruções}. Desta forma buscou-se a geração satisfatória de métricas. Além disso, considerou-se as seguintes latências:
+DADD(2), DADDI(2), DSUB(2), DSUBI(2), DMUL(3), DDIV(3), MEM(1).
 
-No programa 1, trabalhou-se com a \textit{branch} BNE com preponderância de desvio para baixo, incrementando o Registrador R1 até que ele fosse igual a R2. Durante o desenvolvimento, acrescentou-se no programa algumas instruções afim de ampliar o número de instruções no pipeline e também o leque de instruções utilizadas. No programa 2,
-....
+No programa 01, foi usado o \textit{branch} BNE com preponderância de desvio para baixo, incrementando o Registrador R1 até que ele fosse igual a R2. Durante o desenvolvimento, acrescentou-se no programa algumas instruções afim de ampliar o número de instruções no pipeline e também o leque de instruções utilizadas. No programa 2, buscou-se explorar laço dentro de laço, com uma instrução BNE externa, e um BEQ(com desvio para cima) e um BNE(com desvio para baixo) interno. E no programa 03, foi usada uma estrutura tripla de laços de repetição e, de forma análoga ao programa 02, adicionando um laço (do-while), com o desvio BNE (desvio para baixo) externo com 5 iterações.
 
 Para cada programa, após o desenvolvimento e ajustes para o correto funcionamento, foram coletadas métricas de desempenho na utilização dos 2 novos preditores implementados: Desvio para cima TAKEN (V1) e Desvio para cima NOT TAKEN (V2). As métricas coletadas foram Número de Instruções (Comitadas) (NIC), Número de Instruções (NI) Executadas, Ciclos por Instrução (CPI), Tempo de CPU (CPU), Instruções por Segundo (MIPS) e Taxa de Acerto de Predição (TA).
 
@@ -153,20 +153,20 @@ Deste modo, a seguir na ... a compilação resultados da execução dos programa
 
 
 \begin{table}[ht]
-  \label{tab_programas}
   \caption{Estatísticas da Execução dos programas. Elaboração Própria (2022).}
   \begin{center}
+    \label{tab_programas}
     \begin{tabular}{rcccccc}
       \hline
-      \textbf{Métricas} & \multicolumn{2}{c}{\textbf{Programa01}} & \multicolumn{2}{c}{\textbf{Programa02}} & \multicolumn{2}{c}{\textbf{Programa03}}                                              \\
-                        & V1                                      & V2                                      & V1                                      & V2           & V1           & V2           \\
+      \small{\textbf{Métricas}} & \multicolumn{2}{c}{\small{\textbf{Programa01}}} & \multicolumn{2}{c}{\small{\textbf{Programa02}}} & \multicolumn{2}{c}{\small{\textbf{Programa03}}}                                                                                                     \\
+                                & V1                                              & V2                                              & V1                                              & V2                              & V1                             & V2                             \\
       \hline
-      NI                & 1529                                    & 1284                                    & A                                       & A            & A            & A            \\
-      NIC               & 1023                                    & 1274                                    & A                                       & A            & A            & A            \\
-      CPI               & 1.99902                                 & 1.01099                                 & A                                       & A            & A            & A            \\
-      CPU               & 2.045x$10^6$                            & 1.288x$10^{-6}$                         & 2.045x$10^6$                            & 2.045x$10^6$ & 2.045x$10^6$ & 2.045x$10^6$ \\
-      MIPS              & 1.023x$10^{-12}$                        & 1.274x$10^{-12}$                        & A                                       & A            & A            & A            \\
-      TA                & 0.00393701                              & 0.996078                                & A                                       & A            & A            & A            \\
+      NI                        & \footnotesize{1529}                             & \footnotesize{1284}                             & \footnotesize{2596}                             & \footnotesize{1640}             & \footnotesize{3864}            & \footnotesize{2304}            \\
+      NIC                       & \footnotesize{1275}                             & \footnotesize{1275}                             & \footnotesize{1412}                             & \footnotesize{1412}             & \footnotesize{2060}            & \footnotesize{2060}            \\
+      CPI                       & \footnotesize{1.60392}                          & \footnotesize{1.01098}                          & \footnotesize{2.45963}                          & \footnotesize{1.49433}          & \footnotesize{1.88301}         & \footnotesize{1.12136}         \\
+      CPU                       & \footnotesize{2.045x$10^{-6}$}                  & \footnotesize{1.289x$10^{-6}$}                  & \footnotesize{3.473x$10^{-6}$}                  & \footnotesize{2.11x$10^{-6}$}   & \footnotesize{3.879x$10^{-6}$} & \footnotesize{2.31x$10^{-6}$}  \\
+      MIPS                      & \footnotesize{1.275x$10^{-12}$}                 & \footnotesize{1.275x$10^{-12}$}                 & \footnotesize{1.412x$10^{-12}$}                 & \footnotesize{1.412x$10^{-12}$} & \footnotesize{2.06x$10^{-12}$} & \footnotesize{2.06x$10^{-12}$} \\
+      TA                        & \footnotesize{0.00393701}                       & \footnotesize{0.996078}                         & \footnotesize{0.358259}                         & \footnotesize{0.953125}         & \footnotesize{.378626}         & \footnotesize{0.949051}        \\
     \end{tabular}
   \end{center}
   \label{tab:multicol}
@@ -176,8 +176,15 @@ Como pode-se notar na Tabela \ref{tab_programas}, o programa 01, com a maioria d
 
 \section{Conclusão}\label{sec:figs}
 
-* Trabalhos futuros, implementação de metricas na interface.
-* Botão Limpar Execução.
+Compreender o processo de melhoria de hardware é essêncial na área de arquitetura de computadores. Uma estratégia para a análise de análise de métricas de desempenho é a utilização de simuladores. Neste trabalho, buscou-se simular a execução de 3 programas com intuito de coletar métricas de desempenho com utilização do \textbf{Algoritmo de Tomasulo} em conjunto com a  técnica de \textbf{Desvio de Predição Baseada em Direção} com apoio  do simulador TFSim \cite{lucas:2019}.
+
+Para elaboração da pesquisa foi necessário realizar o embasamento teóricos das técnicas utilizadas, estudo do simulador, realização de implementação das novas funcionalidades em conjunto com pequenos ajustes na ferramenta, definição de métricas de desempenho, e por fim a elaboração e análise de 3 programas em MIPS. Dentre as funcionalidades desenvolvidas a inclusão do botão \textit{ALL CYCLE} que permite rodar o programa todo de uma vez, a inclusão de dois novos preditores  de Desvio para cima TAKEN (V1) e Desvio para baixo NOT TAKEN (V2), e, a inclusão de métricas na área não gráfica do programa.
+
+Deste modo, buscou-se no desenvolvimento dos programas explorar os desvios para cima e para baixo de modo a garantir uma análise adequada do desempenho dos preditores. Sendo que este desempenho está relacionado a características dos programas.
+
+..... Aqui resumo da nossa análise...
+
+Assim sendo, cabe sugerir, para pesquisas futuras, a inclusão na ferramenta TFSim de um botão     ``Pause/Stop'', para verificação dos valores no meio da execução. Um botão ``Reiniciar'' para que não seja necessário sair da aplicação a cada execução. E por fim, inclusão de métricas na interface gráfica.
 
 \bibliographystyle{sbc}
 \bibliography{sbc-template}
